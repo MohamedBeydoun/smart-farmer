@@ -11,39 +11,101 @@ app.get("/", (req, res) => {
     res.send("/ route working!");
 });
 
-app.get("/farming", async (req, res) => {
-    const snapSeedPrice = await osrs.ge.getItem("snapdragon seed")
-        .then(data => parseFloat(JSON.parse(data).item.current.price, 10))
+app.get("/farming/:herb1/:herb2", async (req, res) => {
+    let herb1 = req.params.herb1;
+    let herb2 = req.params.herb2;
+
+    if (herb1 == "ranarr" || herb1 == "dwarf") {
+        herb1 = herb1 + "_weed"
+    }
+    if (herb1 == "guam" || herb1 == "irit") {
+        herb1 = herb1 + "_leaf"
+    }
+    if (herb2 == "ranarr" || herb2 == "dwarf") {
+        herb2 = herb2 + "_weed"
+    }
+    if (herb2 == "guam" || herb2 == "irit") {
+        console.log("added leaf")
+        herb2 = herb2 + "_leaf"
+    }
+
+    const herb1SeedPrice = await osrs.ge.getItem(herb1.split("_")[0] + " seed")
+        .then(data => String(JSON.parse(data).item.current.price))
+        .then(data => {
+            if (data.includes("m")) {
+                return parseFloat(data) * 1000000
+            }
+            else if (data.includes(",") || data.includes("k")) {
+                return parseFloat(data) * 1000
+            }
+            else {
+                return parseInt(data)
+            }
+        })
         .catch(err => {
             console.log(err);
         });
 
-    const snapHerbPrice = await osrs.ge.getItem("snapdragon")
-        .then(data => parseFloat(JSON.parse(data).item.current.price, 10))
+    const herb1Price = await osrs.ge.getItem(herb1.replace(/_/g, " "))
+        .then(data => String(JSON.parse(data).item.current.price))
+        .then(data => {
+            if (data.includes("m")) {
+                return parseFloat(data) * 1000000
+            }
+            else if (data.includes(",") || data.includes("k")) {
+                return parseFloat(data) * 1000
+            }
+            else {
+                return parseInt(data)
+            }
+        })
         .catch(err => {
             console.log(err);
         });
 
-    const ranarrSeedPrice = await osrs.ge.getItem("ranarr seed")
-        .then(data => parseFloat(JSON.parse(data).item.current.price, 10))
+    const herb2SeedPrice = await osrs.ge.getItem(herb2.split("_")[0] + " seed")
+        .then(data => String(JSON.parse(data).item.current.price))
+        .then(data => {
+            if (data.includes("m")) {
+                return parseFloat(data) * 1000000
+            }
+            else if (data.includes(",") || data.includes("k")) {
+                return parseFloat(data) * 1000
+            }
+            else {
+                return parseInt(data)
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    const herb2Price = await osrs.ge.getItem(herb2.replace(/_/g, " "))
+        .then(data => String(JSON.parse(data).item.current.price))
+        .then(data => {
+            if (data.includes("m")) {
+                return parseFloat(data) * 1000000
+            }
+            else if (data.includes(",") || data.includes("k")) {
+                return parseFloat(data) * 1000
+            }
+            else {
+                return parseInt(data)
+            }
+        })
         .catch(err => {
             console.log(err);
         });
 
-    const ranarrHerbPrice = await osrs.ge.getItem("ranarr weed")
-        .then(data => parseFloat(JSON.parse(data).item.current.price, 10))
-        .catch(err => {
-            console.log(err);
-        });
+    console.log(herb1SeedPrice, herb1Price, herb2SeedPrice, herb2Price);
 
-    const moneyPerSnapSeed = snapHerbPrice * 9;
-    const moneyPerRanarrSeed = ranarrHerbPrice * 9;
-    const snapProfit = parseInt((moneyPerSnapSeed - snapSeedPrice) * 1000);
-    const ranarrProfit = parseInt((moneyPerRanarrSeed - ranarrSeedPrice) * 1000);
+    const moneyPerHerb1Seed = herb1Price * 9;
+    const moneyPerHerb2Seed = herb2Price * 9;
+    const herb1Profit = parseInt((moneyPerHerb1Seed - herb1SeedPrice));
+    const herb2Profit = parseInt((moneyPerHerb2Seed - herb2SeedPrice));
 
     const results = {
-        snapdragon: snapProfit,
-        ranarr: ranarrProfit
+        herb1Price: herb1Profit,
+        herb2Price: herb2Profit
     }
 
     res.send(results);

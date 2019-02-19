@@ -1,7 +1,8 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Home from "./views/Home.vue";
-import Farming from "./views/Farming.vue";
+import Comparator from "./views/Comparator.vue";
+import Table from "./views/FarmingTable.vue";
 
 Vue.use(Router);
 
@@ -15,9 +16,14 @@ export default new Router({
             component: Home
         },
         {
-            path: "/farming",
-            name: "farming",
-            component: Farming
+            path: "/comparator",
+            name: "comparator",
+            component: Comparator
+        },
+        {
+            path: "/table",
+            name: "table",
+            component: Table
         }
     ]
 });
