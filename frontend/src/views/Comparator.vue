@@ -5,20 +5,36 @@
                 class="mt-5 display-2 text-uppercase text-xs-center"
             >Which two herbs do you want to compare?</h1>
             <v-card class="ma-5 px-5 py-2">
-                <v-form class="my-5 mx-3">
-                    <v-text-field label="1st Herb" color="black" v-model="herb1.name"></v-text-field>
-                    <v-text-field
-                        label="2nd Herb"
+                <v-card-text>
+                    <v-autocomplete
+                        v-model="herb1.name"
                         color="black"
-                        @keyup.enter="submit"
+                        :items="herbList"
+                        label="First Herb"
+                        persistent-hint
+                    >
+                        <v-slide-x-reverse-transition slot="append-outer" mode="out-in"></v-slide-x-reverse-transition>
+                    </v-autocomplete>
+                </v-card-text>
+                <v-card-text>
+                    <v-autocomplete
                         v-model="herb2.name"
-                    ></v-text-field>
+                        @keyup.enter="submit"
+                        color="black"
+                        :items="herbList"
+                        label="Second Herb"
+                        persistent-hint
+                    >
+                        <v-slide-x-reverse-transition slot="append-outer" mode="out-in"></v-slide-x-reverse-transition>
+                    </v-autocomplete>
+                </v-card-text>
+                <div class="my-3 text-xs-center">
                     <v-btn
                         :loading="isLoading"
                         class="black white--text text-uppercase"
                         @click="submit"
                     >Submit</v-btn>
-                </v-form>
+                </div>
             </v-card>
         </div>
         <div v-if="submitted">
@@ -65,8 +81,8 @@
                             :colors="['#008F68', '#FAE042']"
                             :lineOptions="{regionFill: 1, dotSize: 3}"
                             :dataSets="[
-                            {name: herb1.name.toUpperCase(), values: herb1.graph.values}, 
-                            {name: herb2.name.toUpperCase(), values: herb2.graph.values}
+                            {name: herb1.name.toUpperCase().split(' ')[0], values: herb1.graph.values}, 
+                            {name: herb2.name.toUpperCase().split(' ')[0], values: herb2.graph.values}
                             ]"
                             :xIsSeries="1"
                             xAxisMode="span"
@@ -84,7 +100,10 @@
                             :height="450"
                             :colors="['#008F68', '#FAE042']"
                             :lineOptions="{regionFill: 1, dotSize: 3}"
-                            :dataSets="[{name: herb1.name.toUpperCase(), values: herb1.graph.seedValues}, {name: herb2.name.toUpperCase(), values: herb2.graph.seedValues}]"
+                            :dataSets="[
+                            {name: herb1.name.toUpperCase().split(' ')[0], values: herb1.graph.seedValues}, 
+                            {name: herb2.name.toUpperCase().split(' ')[0], values: herb2.graph.seedValues}
+                            ]"
                             :xIsSeries="1"
                             xAxisMode="span"
                             yAxisMode="tick"
@@ -103,6 +122,22 @@
     export default {
         data() {
             return {
+                herbList: [
+                    "Guam leaf",
+                    "Marrentil",
+                    "Tarromin",
+                    "Harralander",
+                    "Ranarr weed",
+                    "Toadflax",
+                    "Irit leaf",
+                    "Avantoe",
+                    "Kwuarm",
+                    "Snapdragon",
+                    "Cadentine",
+                    "Lantadyme",
+                    "Dwarf weed",
+                    "Torstol"
+                ],
                 herb1: {
                     name: "",
                     price: 0,
