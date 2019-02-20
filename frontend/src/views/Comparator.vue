@@ -44,6 +44,43 @@
                         </v-card>
                     </v-flex>
                 </v-layout>
+                <v-layout class="mb-5">
+                    <v-flex>
+                        <vue-frappe
+                            title="HERBS"
+                            id="herb1Chart"
+                            type="line"
+                            :labels="herb1.graph.labels"
+                            :height="450"
+                            :colors="['#008F68', '#FAE042']"
+                            :lineOptions="{regionFill: 1, dotSize: 3}"
+                            :dataSets="[
+                            {name: herb1.name.toUpperCase(), values: herb1.graph.values}, 
+                            {name: herb2.name.toUpperCase(), values: herb2.graph.values}
+                            ]"
+                            :xIsSeries="1"
+                            xAxisMode="span"
+                            yAxisMode="tick"
+                        ></vue-frappe>
+                    </v-flex>
+                </v-layout>
+                <v-layout>
+                    <v-flex>
+                        <vue-frappe
+                            title="SEEDS"
+                            id="seed1Chart"
+                            type="line"
+                            :labels="herb1.graph.labels"
+                            :height="450"
+                            :colors="['#008F68', '#FAE042']"
+                            :lineOptions="{regionFill: 1, dotSize: 3}"
+                            :dataSets="[{name: herb1.name.toUpperCase(), values: herb1.graph.seedValues}, {name: herb2.name.toUpperCase(), values: herb2.graph.seedValues}]"
+                            :xIsSeries="1"
+                            xAxisMode="span"
+                            yAxisMode="tick"
+                        ></vue-frappe>
+                    </v-flex>
+                </v-layout>
             </v-container>
         </div>
     </div>
@@ -51,17 +88,30 @@
 
 <script>
     import api from "@/plugins/Api";
+    import { Chart } from "frappe-charts";
 
     export default {
         data() {
             return {
                 herb1: {
                     name: "",
-                    price: 0
+                    price: 0,
+                    graph: {
+                        labels: [],
+                        values: [],
+                        seedLabels: [],
+                        seedValues: []
+                    }
                 },
                 herb2: {
                     name: "",
-                    price: 0
+                    price: 0,
+                    graph: {
+                        labels: [],
+                        values: [],
+                        seedLabels: [],
+                        seedValues: []
+                    }
                 },
                 currentBest: "",
                 margin: 0,
@@ -69,11 +119,9 @@
             };
         },
 
-        created() {},
-
         methods: {
-            submit() {
-                api()
+            async submit() {
+                await api()
                     .get(
                         "/farming/" +
                             this.herb1.name.toLowerCase().replace(/ /g, "_") +
@@ -82,8 +130,17 @@
                     )
                     .then(data => data.data)
                     .then(data => {
-                        this.herb1.price = data.herb1Price;
-                        this.herb2.price = data.herb2Price;
+                        this.herb1.price = data.herb1.price;
+                        this.herb2.price = data.herb2.price;
+                        this.herb1.graph.labels = data.herb1.labels;
+                        this.herb1.graph.values = data.herb1.values;
+                        this.herb2.graph.labels = data.herb2.labels;
+                        this.herb2.graph.values = data.herb2.values;
+                        this.herb1.graph.seedLabels = data.herb1.seedLabels;
+                        this.herb1.graph.seedValues = data.herb1.seedValues;
+                        this.herb2.graph.seedLabels = data.herb2.seedLabels;
+                        this.herb2.graph.seedValues = data.herb2.seedValues;
+
                         if (this.herb2.price > this.herb1.price) {
                             this.currentBest = this.herb2.name;
                             this.margin = this.herb2.price - this.herb1.price;
@@ -97,9 +154,19 @@
                     .catch(err => {
                         console.log(err);
                     });
-
                 this.submitted = true;
             }
         }
     };
 </script>
+
+<style>
+    /* x axis */
+    .frappe-chart .x.axis .line-vertical {
+        display: none;
+    }
+    .frappe-chart .x.axis .line-vertical,
+    .frappe-chart .x.axis text {
+        display: none !important;
+    }
+</style>
