@@ -104,6 +104,11 @@ app.get("/farming/:herb1/:herb2", async (req, res) => {
     const herb2Profit = parseInt((moneyPerHerb2Seed - herb2SeedPrice));
 
     // get graph data for the items
+    Date.prototype.formatDDMMYYYY = function () {
+        return (this.getDate() + 1) +
+            "/" + this.getMonth() +
+            "/" + this.getFullYear();
+    }
     let herb1Labels = [];
     let herb1Values = [];
     let herb1Graph = await osrs.ge.getGraph(herb1.replace(/_/g, " "))
@@ -116,7 +121,7 @@ app.get("/farming/:herb1/:herb2", async (req, res) => {
                 return data[k];
             });;
             for (let i = 0; i < herb1Labels.length; i++) {
-                herb1Labels[i] = String(new Date(parseInt(herb1Labels[i])));
+                herb1Labels[i] = String(new Date(parseInt(herb1Labels[i])).formatDDMMYYYY());
             }
         });
 

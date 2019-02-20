@@ -6,8 +6,18 @@
             >Which two herbs do you want to compare?</h1>
             <v-card class="ma-5 px-5 py-2">
                 <v-form class="my-5 mx-3">
-                    <v-text-field label="1st Herb" v-model="herb1.name"></v-text-field>
-                    <v-text-field label="2nd Herb" @keyup.enter="submit" v-model="herb2.name"></v-text-field>
+                    <v-text-field label="1st Herb" color="black" v-model="herb1.name"></v-text-field>
+                    <v-text-field
+                        label="2nd Herb"
+                        color="black"
+                        @keyup.enter="submit"
+                        v-model="herb2.name"
+                    ></v-text-field>
+                    <v-btn
+                        :loading="isLoading"
+                        class="black white--text text-uppercase"
+                        @click="submit"
+                    >Submit</v-btn>
                 </v-form>
             </v-card>
         </div>
@@ -115,12 +125,14 @@
                 },
                 currentBest: "",
                 margin: 0,
-                submitted: false
+                submitted: false,
+                isLoading: false
             };
         },
 
         methods: {
             async submit() {
+                this.isLoading = true;
                 await api()
                     .get(
                         "/farming/" +
