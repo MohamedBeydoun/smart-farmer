@@ -170,7 +170,7 @@
                 this.isLoading = true;
                 await api()
                     .get(
-                        "/farming/" +
+                        "/comparator/" +
                             this.herb1.name.toLowerCase().replace(/ /g, "_") +
                             "/" +
                             this.herb2.name.toLowerCase().replace(/ /g, "_")
